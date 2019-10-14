@@ -1,0 +1,8 @@
+Changes
+credsman.xs
+Makefile.PL
+MANIFEST
+README
+t/1.credsgui.t
+t/2.credsman.t
+lib/credsman.pm
