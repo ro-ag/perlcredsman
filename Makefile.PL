@@ -24,5 +24,6 @@ WriteMakefile(
     TEST_REQUIRES      => {
                            'Test::More' => 0,
                            'ExtUtils::testlib' => 0,
+                           'Params::ValidationCompiler' => 0,
                         },
 );

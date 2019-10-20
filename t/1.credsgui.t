@@ -5,5 +5,6 @@ use ExtUtils::testlib;
 BEGIN { use_ok('credsman')};
 
 note("Open Credentian GUI");
-pass(credsman::GuiCredentials( 'credsman','This is a test only, Close This Window','Credsman Example', 0 ));
+pass(credsman::GuiCred( caption => 'Credsman GUI',
+                        message => 'This is a test only, Close This Window' ));
 done_testing;

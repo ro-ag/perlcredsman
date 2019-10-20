@@ -2,11 +2,11 @@ package credsman;
 use 5.018000;
 use strict;
 use warnings;
-use Types::Standard qw( Int Str CodeRef );
-use Params::ValidationCompiler qw( validation_for );
+use Types::Standard qw[Int Str CodeRef];
+use Params::ValidationCompiler qw[validation_for];
 use Data::Dumper;
 use Exporter qw(import);
-our @EXPORT_OK = qw(login);
+our @EXPORT_OK = qw[login GuiCred];
 
 our $VERSION = '1.00';
 
@@ -16,48 +16,49 @@ XSLoader::load('credsman', $VERSION);
 # There are 4 XS internal functions that interact with Credential Manager
 # RemoveCredentials  - Remove Credentials
 # SaveCredentials    - Store Credentials
-# GuiCredentials     - Open Prompt USER and PASSWORD gui
+# GuiCredentials     - Open Prompt USER and PASSWORD gui 
+# GuiCred            - Same of GuiCredentials but exposed to this module
 # work_name          - Creates Credentials Name String 
 
-#------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------#
 my $validator = validation_for(
     params => {
-        Program   => { type => Str },
-        Target    => { type => Str },
-        SubRef    => { type => CodeRef },
-        Limit     => { type => Int, optional => 1, default => 3 },
-        Debug     => { type => Int, optional => 1, default => 0 }
+        program   => { type => Str },
+        target    => { type => Str },
+        subref    => { type => CodeRef },
+        limit     => { type => Int, optional => 1, default => 3 },
+        debug     => { type => Int, optional => 1, default => 0 }
     }
 );
-
+#-------------------------------------------------------------------------------------------#
 sub login{
     my %arg = $validator->(@_);
-    say  "*** Arguments ****\n".Dumper \%arg if $arg{Debug};
+    say  "*** Arguments ****\n".Dumper \%arg if $arg{debug};
     my %wrkCred = (
         status   => 5,
         attempt  => 0,
-        limit    => $arg{Limit},
+        limit    => $arg{limit},
         password => undef,
         user     => undef,
-        target   => $arg{Target},
+        target   => $arg{target},
     );
     # Concat Target Name - This is the name to be stored 
-    my $TargetName = work_name($arg{Program},$arg{Target});
-    say "TargetName : ".$TargetName if $arg{Debug};
+    my $TargetName = work_name($arg{program},$arg{target});
+    say "TargetName : ".$TargetName if $arg{debug};
     # Load Passwords ad runs the function passed with the argument
     while ($wrkCred{status} != 0 and $wrkCred{attempt} < $wrkCred{limit}){
-        say "in loop" if $arg{Debug};
+        say "in loop" if $arg{debug};
         # load Credentials from Windows Credential Manager
         ($wrkCred{user}, $wrkCred{password}) = @{LoadCredentials($TargetName)};
-        say "*** Load Credentials ****\n".Dumper \%wrkCred if $arg{Debug};
+        say "*** Load Credentials ****\n".Dumper \%wrkCred if $arg{debug};
         # Check if the Credentials was found
         if( !defined $wrkCred{user}){
             # Request User and Password GUI
-            say "Not Defined" if $arg{Debug};
+            say "Not Defined" if $arg{debug};
             ($wrkCred{user}, $wrkCred{password}) = @{
                 GuiCredentials(
-                    $arg{Program}, 
-                    $arg{Target}, 
+                    $arg{program}, 
+                    $arg{target}, 
                     $TargetName, 
                     $wrkCred{attempt})
             };
@@ -66,7 +67,7 @@ sub login{
                 die "Cancel" ;
             }
 
-            say "After GUI \n".Dumper \%wrkCred if $arg{Debug};
+            say "After GUI \n".Dumper \%wrkCred if $arg{debug};
             # Store Credentials in Windoes Credential Manager
             if( SaveCredentials($TargetName, $wrkCred{user}, $wrkCred{password}) ){
                 die "Error to Save Credentials";
@@ -74,7 +75,7 @@ sub login{
         }
         else {
             # Call Function passed in Argument
-            $wrkCred{status} = $arg{SubRef}->(\%wrkCred);
+            $wrkCred{status} = $arg{subref}->(\%wrkCred);
             # Expeciting RC 0 to pass
             if ($wrkCred{status}){
                 $wrkCred{attempt}++;
@@ -85,23 +86,72 @@ sub login{
     # Clear Credentials for Security
     $wrkCred{user}     =~ s/.*/ /g;
     $wrkCred{password} =~ s/.*/ /g;
-    say "END" if $arg{Debug};
+    say "END" if $arg{debug};
     # Return Status
     return $wrkCred{status};
+}
+#-------------------------------------------------------------------------------------------#
+my $GuiVal = validation_for(
+    params => {
+        message   => { type => Str },
+        caption   => { type => Str },
+        attempt   => { type => Int, optional => 1, default => 0 }
+    }
+);
+#-------------------------------------------------------------------------------------------#
+sub GuiCred {
+    my %arg = $GuiVal->(@_);
+    return GuiCredentials(
+            $arg{caption}, 
+            $arg{message}, 
+            '', 
+            $arg{attempt});
 }
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-credsman - Perl extension for blah blah blah
+credsman - is a simple Pel extension to work with 'Windows Credential Manager'.  
 
 =head1 SYNOPSIS
 
-  use credsman;
-  blah blah blah
+    use strict;
+    use warnings;
+    use ExtUtils::testlib;
+    use credsman qw(login);
+
+    # This type of function is necessary to run login, 
+    # you need to handle the access or conenction and Error messages
+
+    sub Connect_Example {
+        my $credentials = shift;
+        # Here your code to login or connect using user and password
+        if( $credentials->{user} eq 'pepe' and  $credentials->{password} eq 'pepepass' ){
+            print "The Target Name is: $credentials->{target}\n";
+            print "  User  : $credentials->{user}\n";
+            print "  Pass  : $credentials->{password}\n";
+            print "Attempt : $credentials->{attempt} of $credentials->{limit}\n"; 
+            # Return 0 - Success
+            return 0;
+        }
+        else{
+            print "Fail\n";
+            # Return to fail
+            return 1;
+        }
+    }
+   
+    # In this Example the prgram will die at the attempt number 10.
+
+    die "No Zero Return" if login( 
+        program  => 'credsman',          # The Prefix to Store the credentials in wcm 
+        target   => "Test",              # The Target to validate user and password, usually a server
+        subref   => \Connect_Example(),  # Reference to a Function (how to validate password)
+        limit    => 10,                  # Number of Attemps before the program Finish
+    );
+
 
 =head1 DESCRIPTION
 

@@ -27,10 +27,10 @@ sub testing_prototype{
 my $credsname = credsman::work_name('credsman','Test');
 ok $credsname eq '*[credsman]~[Test]*', 'Create Test Target Name';
 ok !credsman::SaveCredentials($credsname, 'Pepe','PepePass'), 'Store User and Password';
-ok !credsman::login( Program  => "credsman", 
-       Target   => "Test",
-       SubRef   => \&testing_prototype,
-       Debug    => 0,
+ok !credsman::login( program  => "credsman", 
+       target   => "Test",
+       subref   => \&testing_prototype,
+       debug    => 0,
 ), 'Credsman Login';
 ok credsman::RemoveCredentials($credsname), 'Remove Test Credentials';
 done_testing;
