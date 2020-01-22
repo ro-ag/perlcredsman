@@ -119,11 +119,10 @@ credsman - is a simple Pel extension to work with 'Windows Credential Manager'.
 
     use strict;
     use warnings;
-    use ExtUtils::testlib;
     use credsman qw(login);
 
     # This type of function is necessary to run login, 
-    # you need to handle the access or conenction and Error messages
+    # You need to handle the access or conenction and Error messages
 
     sub Connect_Example {
         my $credentials = shift;
@@ -143,7 +142,7 @@ credsman - is a simple Pel extension to work with 'Windows Credential Manager'.
         }
     }
    
-    # In this Example the prgram will die at the attempt number 10.
+    # In this Example the program will die at the attempt number 10.
 
     die "No Zero Return" if login( 
         program  => 'credsman',          # The Prefix to Store the credentials in wcm 
