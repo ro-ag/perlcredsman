@@ -154,33 +154,24 @@ credsman - is a simple Pel extension to work with 'Windows Credential Manager'.
 
 =head1 DESCRIPTION
 
-Stub documentation for credsman, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+Credsman (credential manager)
 
-    # Windows Credential Manager - Generic Credentials
-    # format:
-    # *['program name']~['Server name or Addres']*
+A small library that interacts with Perl and Windows Credential Manager.
+
+It incorporates Windows Credential GUI. It also uses and is integrated with the status.
+
+The Credentials will be stored with the Following format
 
 
-Blah blah blah.
+    - Windows Credential Manager - Generic Credentials
+    - format:
+    - *['program name']~['Server name or Addres']*
 
 =head2 EXPORT
 
-None by default.
+login:   Function  
+GuiCred: Windows GUI User and Password Login.
 
-
-
-=head1 SEE ALSO
-
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
 
 =head1 AUTHOR
 
