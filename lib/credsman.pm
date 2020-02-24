@@ -147,7 +147,7 @@ credsman - is a simple Pel extension to work with 'Windows Credential Manager'.
     die "No Zero Return" if login( 
         program  => 'credsman',          # The Prefix to Store the credentials in wcm 
         target   => "Test",              # The Target to validate user and password, usually a server
-        subref   => \Connect_Example(),  # Reference to a Function (how to validate password)
+        subref   => \&Connect_Example,   # Reference to a Function (how to validate password)
         limit    => 10,                  # Number of Attemps before the program Finish
     );
 
@@ -175,11 +175,11 @@ GuiCred: Windows GUI User and Password Login.
 
 =head1 AUTHOR
 
-A. U. Thor, E<lt>a.u.thor@a.galaxy.far.far.awayE<gt>
+RODAGU , E<lt>rodagu@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2019 by A. U. Thor
+Copyright (C) 2020 by Rodrigo Agurto
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.30.0 or,

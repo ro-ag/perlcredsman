@@ -15,7 +15,8 @@ WriteMakefile(
                           }, 
     ABSTRACT_FROM      => 'lib/credsman.pm', # retrieve abstract from module
     AUTHOR             => 'Rodrigo Agurto <rodagurto@aim.com>',
-    LICENSE            => 'perl',
+    LICENSE            => 'freebsd',
+    #EXE_FILES          =>  ['example.pl'],
     #Value must be from legacy list of licenses here
     #http://search.cpan.org/perldoc?Module%3A%3ABuild%3A%3AAPI
     LIBS               => ['-lgdi32 -lCredui'], # e.g., '-lm'

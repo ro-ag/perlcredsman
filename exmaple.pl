@@ -1,6 +1,7 @@
+    #!perl
     use strict;
     use warnings;
-    use ExtUtils::testlib;
+    use Carp::Always;
     use credsman qw(login);
 
     # This type of function is necessary to run login, 
@@ -29,6 +30,6 @@
     die "No Zero Return" if login( 
         program  => 'credsman',         # The Prefix to Store the credentials in wcm 
         target   => "Test",             # The Target to validate user and password, usually a server
-        subref   => \Connect_Example(),  # Reference to a Function (how to validate password)
+        subref   => \&Connect_Example,  # Reference to a Function (how to validate password)
         limit    => 10,                 # Number of Attemps before the program Finish
     );

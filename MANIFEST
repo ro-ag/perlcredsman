@@ -1,8 +1,11 @@
-Changes
+build.cmd
+Credsman.png
 credsman.xs
+exmaple.pl
+lib/credsman.pm
+LICENSE
 Makefile.PL
 MANIFEST
 README
 t/1.credsgui.t
 t/2.credsman.t
-lib/credsman.pm
