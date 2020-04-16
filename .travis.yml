@@ -1,4 +1,5 @@
 language: perl
+os: windows
 perl:
   - "5.30"
   - "5.28"
